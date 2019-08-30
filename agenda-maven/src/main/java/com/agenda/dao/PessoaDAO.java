@@ -1,11 +1,10 @@
 package com.agenda.dao;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
+import com.agenda.model.Contato;
+import com.agenda.model.Endereco;
 import com.agenda.model.Pessoa;
 import com.agenda.util.ConnectionFactory;
 import com.mysql.jdbc.Connection;
@@ -16,7 +15,7 @@ public class PessoaDAO {
 
 	public void cadastrar(Pessoa pessoa) {
 
-		String SQL = "insert into pessoas (nome) values (?)";
+		String SQL = "insert into pessoas (nome,id_contato,id_endereco) values (?,?,?)";
 
 		try {
 
@@ -24,7 +23,8 @@ public class PessoaDAO {
 			PreparedStatement stmt = this.connection.prepareStatement(SQL);
 
 			stmt.setString(1, pessoa.getNome());
-			
+			stmt.setLong(2, pessoa.getContato().getId());
+			stmt.setLong(3, pessoa.getEndereco().getId());			
 
 			stmt.execute();
 			stmt.close();

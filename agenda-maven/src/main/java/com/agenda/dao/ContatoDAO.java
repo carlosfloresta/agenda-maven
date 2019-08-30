@@ -1,6 +1,7 @@
 package com.agenda.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.agenda.model.Contato;
@@ -12,7 +13,7 @@ public class ContatoDAO {
 	
 	private Connection connection;
 
-	public void cadastrar(Contato contato) {
+	public Contato cadastrar(Contato contato) {
 
 		String SQL = "insert into contato (email,telefone) values (?,?)";
 
@@ -23,14 +24,22 @@ public class ContatoDAO {
 
 			stmt.setString(1, contato.getEmail());
 			stmt.setString(2, contato.getTelefone());
-			
 
 			stmt.execute();
+			
+			ResultSet resultSet = stmt.executeQuery("SELECT LAST_INSERT_ID()");
+			if (resultSet.next()) {
+				int  novoId = resultSet.getInt("LAST_INSERT_ID()");
+				contato.setId(novoId);
+			}
+			
 			stmt.close();
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
+		
+		return contato;
 
 	}
 	
